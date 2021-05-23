@@ -4,11 +4,62 @@
     <meta charset="utf-8">
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.6.0/dist/tf.min.js"></script>
     <title></title>
+    <style media="screen">
+    .choose {
+box-shadow: -14px -7px 33px -5px #3dc21b;
+background:linear-gradient(to bottom, #44c767 5%, #5cbf2a 100%);
+background-color:#44c767;
+border-radius:42px;
+border:5px solid #18ab29;
+display:inline-block;
+cursor:pointer;
+color:#ffffff;
+font-family:Courier New;
+font-size:28px;
+padding:23px 48px;
+text-decoration:none;
+text-shadow:0px 1px 0px #0a0a0a;
+}
+.choose:hover {
+background:linear-gradient(to bottom, #5cbf2a 5%, #44c767 100%);
+background-color:#5cbf2a;
+}
+.choose:active {
+position:relative;
+top:1px;
+}
+
+.start {
+box-shadow: -14px -7px 33px -5px #0000ff;
+background:linear-gradient(to bottom, #0d248c 5%, #1e00ff 100%);
+background-color:#0d248c;
+border-radius:42px;
+border:5px solid #6519ab;
+display:inline-block;
+cursor:pointer;
+color:#ffffff;
+font-family:Courier New;
+font-size:28px;
+padding:23px 48px;
+text-decoration:none;
+text-shadow:0px 1px 0px #080808;
+}
+.start:hover {
+background:linear-gradient(to bottom, #1e00ff 5%, #0d248c 100%);
+background-color:#1e00ff;
+}
+.start:active {
+position:relative;
+top:1px;
+}
+
+    </style>
   </head>
+
   <body>
 
 
-<input id = "picField" type="file" name="" value="" accept=".png,.jpg,.bmp"><br>
+<input class="choose"id = "picField" type="file" name="" value="" accept=".png,.jpg,.bmp"><br>
 <canvas id="c" width="3000" height="3000"></canvas>
 <canvas id="c2" width="128" height="128"></canvas>
 <canvas id="c3" width="128" height="128"></canvas>
@@ -183,6 +234,8 @@
             }
         }
       </script>
-      <button type="button" name="get tensor" onclick="getTensor()">PROCESS</button><br>
+
+      <button class="start" type="button" name="get tensor" onclick="getTensor()">PROCESS</button><br>
+      The last one is upsampled "normally" without ML. 
   </body>
 </html>
