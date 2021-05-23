@@ -8,7 +8,7 @@
   <body>
 
 
-<input id = "picField" type="file" name="" value=""><br>
+<input id = "picField" type="file" name="" value="" accept=".png,.jpg,.bmp"><br>
 <canvas id="c" width="3000" height="3000"></canvas>
 <canvas id="c2" width="128" height="128"></canvas>
 <canvas id="c3" width="128" height="128"></canvas>
@@ -70,8 +70,6 @@
           prediction.print()
           document.body.appendChild(cvv);
           let o2 = image
-
-
 
           ///////////////////////
           var canvas = document.getElementById("c3");
@@ -157,13 +155,21 @@
           stacked.print()
           document.body.appendChild(cvv);
 
+
+
+
           tensor = tf.image.resizeNearestNeighbor(originalstacked, [256,256])
+
           var cvv = document.createElement('canvas');
           cvv.id="normalUpsample"
           cvv.width = 256
           cvv.height = 256
           await tf.browser.toPixels (tensor, cvv);
+
           document.body.appendChild(cvv);
+
+
+
         }
         document.getElementById('picField').onchange = async function (evt) {
             var tgt = evt.target || window.event.srcElement,
