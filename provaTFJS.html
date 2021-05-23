@@ -97,6 +97,18 @@ top:1px;
             console.log("Resize Complete")
         };
         async function getTensor(){
+          try {
+            removeElement("r1")
+            removeElement("r2")
+            removeElement("r3")
+            removeElement("rgb")
+            removeElement("normalUpsample")
+          } catch (error) {
+            console.error(error);
+            // expected output: ReferenceError: nonExistentFunction is not defined
+            // Note - error messages will vary depending on browser
+          }
+
           var canvas = document.getElementById("c2");
           var ctx = canvas.getContext("2d");
           var image = ctx.getImageData(0,0,canvas.width,canvas.height);
@@ -232,6 +244,10 @@ top:1px;
                 }
                 fr.readAsDataURL(files[0]);
             }
+        }
+        function removeElement(id) {
+            var elem = document.getElementById(id);
+            return elem.parentNode.removeChild(elem);
         }
       </script>
 
