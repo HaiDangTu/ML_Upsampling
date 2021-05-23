@@ -157,21 +157,13 @@
           stacked.print()
           document.body.appendChild(cvv);
 
-
-
-
           tensor = tf.image.resizeNearestNeighbor(originalstacked, [256,256])
-
           var cvv = document.createElement('canvas');
           cvv.id="normalUpsample"
           cvv.width = 256
           cvv.height = 256
           await tf.browser.toPixels (tensor, cvv);
-
           document.body.appendChild(cvv);
-
-
-
         }
         document.getElementById('picField').onchange = async function (evt) {
             var tgt = evt.target || window.event.srcElement,
