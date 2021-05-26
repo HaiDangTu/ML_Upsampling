@@ -1,245 +1,157 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
+<head>
     <meta charset="utf-8">
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.6.0/dist/tf.min.js"></script>
     <title></title>
     <style media="screen">
-    .choose {
-box-shadow: -14px -7px 33px -5px #3dc21b;
-background:linear-gradient(to bottom, #44c767 5%, #5cbf2a 100%);
-background-color:#44c767;
-border-radius:42px;
-border:5px solid #18ab29;
-display:inline-block;
-cursor:pointer;
-color:#ffffff;
-font-family:Courier New;
-font-size:28px;
-padding:23px 48px;
-text-decoration:none;
-text-shadow:0px 1px 0px #0a0a0a;
-}
-.choose:hover {
-background:linear-gradient(to bottom, #5cbf2a 5%, #44c767 100%);
-background-color:#5cbf2a;
-}
-.choose:active {
-position:relative;
-top:1px;
-}
-
-.start {
-box-shadow: -14px -7px 33px -5px #0000ff;
-background:linear-gradient(to bottom, #0d248c 5%, #1e00ff 100%);
-background-color:#0d248c;
-border-radius:42px;
-border:5px solid #6519ab;
-display:inline-block;
-cursor:pointer;
-color:#ffffff;
-font-family:Courier New;
-font-size:28px;
-padding:23px 48px;
-text-decoration:none;
-text-shadow:0px 1px 0px #080808;
-}
-.start:hover {
-background:linear-gradient(to bottom, #1e00ff 5%, #0d248c 100%);
-background-color:#1e00ff;
-}
-.start:active {
-position:relative;
-top:1px;
-}
-
+        .choose {
+            box-shadow: -14px -7px 33px -5px #3dc21b;
+            background: linear-gradient(to bottom, #44c767 5%, #5cbf2a 100%);
+            background-color: #44c767;
+            border-radius: 42px;
+            border: 5px solid #18ab29;
+            display: inline-block;
+            cursor: pointer;
+            color: #ffffff;
+            font-family: Courier New;
+            font-size: 28px;
+            padding: 23px 48px;
+            text-decoration: none;
+            text-shadow: 0px 1px 0px #0a0a0a;
+        }
+        .choose:hover {
+            background: linear-gradient(to bottom, #5cbf2a 5%, #44c767 100%);
+            background-color: #5cbf2a;
+        }
+        .choose:active {
+            position: relative;
+            top: 1px;
+        }
+        .start {
+            box-shadow: -14px -7px 33px -5px #0000ff;
+            background: linear-gradient(to bottom, #0d248c 5%, #1e00ff 100%);
+            background-color: #0d248c;
+            border-radius: 42px;
+            border: 5px solid #6519ab;
+            display: inline-block;
+            cursor: pointer;
+            color: #ffffff;
+            font-family: Courier New;
+            font-size: 28px;
+            padding: 23px 48px;
+            text-decoration: none;
+            text-shadow: 0px 1px 0px #080808;
+        }
+        .start:hover {
+            background: linear-gradient(to bottom, #1e00ff 5%, #0d248c 100%);
+            background-color: #1e00ff;
+        }
+        .start:active {
+            position: relative;
+            top: 1px;
+        }
     </style>
-  </head>
+</head>
 
-  <body>
+<body>
+    <input class="choose" id="picField" type="file" name="" value="" accept=".png,.jpg,.bmp"><br>
+    <canvas id="c" width="3000" height="3000"></canvas>
+    <canvas id="cInput" width="128" height="128"></canvas>
 
-
-<input class="choose"id = "picField" type="file" name="" value="" accept=".png,.jpg,.bmp"><br>
-<canvas id="c" width="3000" height="3000"></canvas>
-<canvas id="c2" width="128" height="128"></canvas>
-<canvas id="c3" width="128" height="128"></canvas>
-<canvas id="c4" width="128" height="128"></canvas>
-<br>
-      <script type="text/javascript">
+    <br>
+    <script type="text/javascript">
         var canvas = document.getElementById("c");
         var ctx = canvas.getContext("2d");
         ctx.canvas.hidden = true;
         var image = new Image();
         image.onload = async function() {
-            canvas.width  = image.width;
+            canvas.width = image.width;
             canvas.height = image.height;
             console.log("DRAWING IMAGE ...")
             ctx.drawImage(image, 0, 0);
-
-            var im = ctx.getImageData(0,0,canvas.width,canvas.height);
+            var im = ctx.getImageData(0, 0, canvas.width, canvas.height);
             let tensor = tf.browser.fromPixels(im)
-            tensor = tf.image.resizeNearestNeighbor(tensor, [128,128])
-
-            //tensor = tensor.mean(2).toFloat().expandDims(0).expandDims(-1)
-            red = tf.unstack(tensor,2)[0]
-            const b = tf.scalar(255.0);
-            red = red.div(b)
-            await tf.browser.toPixels (red.reshape([128,128,1]), document.getElementById("c2"));
-
-            green = tf.unstack(tensor,2)[1]
-            green = green.div(b)
-            await tf.browser.toPixels (green.reshape([128,128,1]), document.getElementById("c3"));
-
-            blue = tf.unstack(tensor,2)[2]
-            blue = blue.div(b)
-            await tf.browser.toPixels (blue.reshape([128,128,1]), document.getElementById("c4"));
-
+            await tf.browser.toPixels(tensor, document.getElementById("cInput"));
             console.log("Resize Complete")
         };
-        async function getTensor(){
-          try {
-            removeElement("r1")
-            removeElement("r2")
-            removeElement("r3")
-            removeElement("rgb")
-            removeElement("normalUpsample")
-          } catch (error) {
-            console.error(error);
-            // expected output: ReferenceError: nonExistentFunction is not defined
-            // Note - error messages will vary depending on browser
-          }
-
-          var canvas = document.getElementById("c2");
+        async function padMul128(){
+          var canvas = document.getElementById("cInput");
           var ctx = canvas.getContext("2d");
-          var image = ctx.getImageData(0,0,canvas.width,canvas.height);
+          var image = ctx.getImageData(0, 0, canvas.width, canvas.height);
           let tensor = tf.browser.fromPixels(image)
-          tensor.print()
-          const model = await tf.loadLayersModel('modelloh5/model.json');
-          tensor = tf.image.resizeNearestNeighbor(tensor, [128,128])
-          console.log(tensor.dtype)
-          tensor.print()
 
-          tensor = tf.unstack(tensor,2)[0].expandDims(0).expandDims(-1).toFloat()
+          newH = Math.ceil(canvas.height/128.0)*128
+          console.log("NEW HEIGHT: "+newH)
+          newW = Math.ceil(canvas.width/128.0)*128
+          console.log("NEW WIDTH: "+newW)
+          console.log("newH-canvas.height:"+(newH-canvas.height))
+          console.log("newW-canvas.width:"+(newW-canvas.width))
+          padded = tensor.pad([[0, newH-canvas.height],[0,newW-canvas.width],[0,0]])
+          console.log(padded.shape)
+
+          padded.print()
+          var cvv = document.createElement('canvas');
+          cvv.id = "r3"
+          cvv.width = padded.shape[0]
+          cvv.height = padded.shape[0]
+          await tf.browser.toPixels(padded, cvv);
+          document.body.appendChild(cvv);
+          console.log("UPSAMPLE128 END")
+          slice()
+        }
+        async function slice(){
+          var canvas = document.getElementById("r3");
+          var ctx = canvas.getContext("2d");
+          var image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          let tensor = tf.browser.fromPixels(image)
           const b = tf.scalar(255.0);
           tensor = tensor.toFloat().div(b)
-          console.log(tensor.dtype)
-          console.log("TENSOR INPUT: ")
-          var prediction = model.predict(tensor);
+
+          row = []
+          for (var i = 0; i < canvas.width; i+=128){
+            col = []
+            for (var j = 0; j < canvas.height; j+=128){
+
+              res = tensor.slice([j,i],[128,128])
+
+              /*var cvv = document.createElement('canvas');
+              cvv.width = res.shape[0]
+              cvv.height = res.shape[0]
+              await tf.browser.toPixels(res, cvv);
+              document.body.appendChild(cvv);*/
+
+              res = await upsampleTo256(res)
+              console.log("RES SHAPE SHOULD BE RANK 3:"+res.shape)
+              col.push(res)
+            }
+            var fullcolumn = tf.concat(col,0)
+
+            row.push(fullcolumn)
+          }
+
+          var complete = tf.concat(row,1)
+
           var cvv = document.createElement('canvas');
-          cvv.id="r1"
-          cvv.width = prediction.shape.width
-          cvv.height = prediction.shape.height
-          await tf.browser.toPixels (prediction.reshape([256,256,1]).clipByValue(0,1), cvv);
-          prediction.print()
-          document.body.appendChild(cvv);
-          let o2 = image
-
-          ///////////////////////
-          var canvas = document.getElementById("c3");
-          var ctx = canvas.getContext("2d");
-          var image = ctx.getImageData(0,0,canvas.width,canvas.height);
-          tensor = tf.browser.fromPixels(image)
-          tensor.print()
-          tensor = tf.image.resizeNearestNeighbor(tensor, [128,128])
-          console.log(tensor.dtype)
-          tensor.print()
-
-          tensor = tf.unstack(tensor,2)[0].expandDims(0).expandDims(-1).toFloat()
-          tensor = tensor.toFloat().div(b)
-          console.log(tensor.dtype)
-          console.log("TENSOR INPUT: ")
-          var prediction = model.predict(tensor);
-          var cvv = document.createElement('canvas');
-          cvv.id="r2"
-          cvv.width = prediction.shape.width
-          cvv.height = prediction.shape.height
-          await tf.browser.toPixels (prediction.reshape([256,256,1]).clipByValue(0,1), cvv);
-          prediction.print()
-          document.body.appendChild(cvv);
-          let o3 = image
-          ///////////////////////
-          var canvas = document.getElementById("c4");
-          var ctx = canvas.getContext("2d");
-          var image = ctx.getImageData(0,0,canvas.width,canvas.height);
-          tensor = tf.browser.fromPixels(image)
-          tensor.print()
-          tensor = tf.image.resizeNearestNeighbor(tensor, [128,128])
-          console.log(tensor.dtype)
-          tensor.print()
-
-          tensor = tf.unstack(tensor,2)[0].expandDims(0).expandDims(-1).toFloat()
-          tensor = tensor.toFloat().div(b)
-          console.log(tensor.dtype)
-          console.log("TENSOR INPUT: ")
-          var prediction = model.predict(tensor);
-          var cvv = document.createElement('canvas');
-          cvv.id="r3"
-          cvv.width = prediction.shape.width
-          cvv.height = prediction.shape.height
-          await tf.browser.toPixels (prediction.reshape([256,256,1]).clipByValue(0,1), cvv);
-          prediction.print()
-          document.body.appendChild(cvv);
-          let o4 = image
-          ///////////////////////
-          var c2 = document.getElementById("r1");
-          var c3 = document.getElementById("r2");
-          var c4 = document.getElementById("r3");
-
-          let originalstacked = tf.stack([tf.unstack(tf.browser.fromPixels(o2),2)[0],tf.unstack(tf.browser.fromPixels(o3),2)[0],tf.unstack(tf.browser.fromPixels(o4),2)[0]],2)
-          console.log("ORIGINAL SHAPE:::::::::"+originalstacked.shape)
-
-          var ctx2 = c2.getContext("2d");
-          var image = ctx2.getImageData(0,0,c2.width,c2.height);
-          console.log("C2 HEIGTH"+c2.height)
-          console.log("CLEAN SHAPE: "+tf.browser.fromPixels(image).shape)
-          t2 = tf.unstack(tf.browser.fromPixels(image),2)[0]
-          console.log("UNSTACKED SHAPE: "+t2.shape)
-
-          var ctx3 = c3.getContext("2d");
-          var image = ctx3.getImageData(0,0,c3.width,c3.height);
-          t3 = tf.unstack(tf.browser.fromPixels(image),2)[0]
-
-          var ctx4 = c4.getContext("2d");
-          var image = ctx4.getImageData(0,0,c4.width,c4.height);
-          t4 = tf.unstack(tf.browser.fromPixels(image),2)[0]
-
-          stacked = tf.stack([t2,t3,t4],2)
-          console.log(stacked.shape)
-          stacked = stacked.toFloat().div(b)
-          var cvv = document.createElement('canvas');
-          cvv.id="rgb"
-          cvv.width = prediction.shape.width
-          cvv.height = prediction.shape.height
-          stacked.print()
-          console.log("STACKED SHAPE", stacked.shape)
-          console.log("FINAL H: "+stacked.shape.height)
-          console.log("FINAL 2: "+stacked.shape.width)
-          await tf.browser.toPixels (stacked.clipByValue(0,1), cvv);
-          stacked.print()
+          cvv.width = res.shape[0]
+          cvv.height = res.shape[0]
+          console.log(complete.shape)
+          await tf.browser.toPixels(complete.clipByValue(0,1), cvv);
           document.body.appendChild(cvv);
 
 
 
-
-          tensor = tf.image.resizeNearestNeighbor(originalstacked, [256,256])
-
-          var cvv = document.createElement('canvas');
-          cvv.id="normalUpsample"
-          cvv.width = 256
-          cvv.height = 256
-          await tf.browser.toPixels (tensor, cvv);
-
-          document.body.appendChild(cvv);
 
 
 
         }
-        document.getElementById('picField').onchange = async function (evt) {
+
+        document.getElementById('picField').onchange = async function(evt) {
             var tgt = evt.target || window.event.srcElement,
-            files = tgt.files;
+                files = tgt.files;
             if (FileReader && files && files.length) {
                 var fr = new FileReader();
-                fr.onload = async function () {
+                fr.onload = async function() {
                     image.src = fr.result
                 }
                 fr.readAsDataURL(files[0]);
@@ -249,9 +161,32 @@ top:1px;
             var elem = document.getElementById(id);
             return elem.parentNode.removeChild(elem);
         }
-      </script>
+        async function upsampleTo256(tensor) {
+            const model = await tf.loadLayersModel('modelloh5/model.json');
+            var res = []
+            for(var i = 0; i<3; i++)
+            {
+              var layer = tf.unstack(tensor, 2)[i].expandDims(0).expandDims(-1).toFloat()
+              var prediction = model.predict(layer).squeeze();//squeezes third axis
 
-      <button class="start" type="button" name="get tensor" onclick="getTensor()">PROCESS</button><br>
-      The last one is upsampled "normally" without ML. <br>
-  </body>
+              res.push(prediction)
+              //var cvv = document.createElement('canvas');
+              //cvv.id = "r1"
+              //cvv.width = prediction.shape.width
+              //cvv.height = prediction.shape.height
+              //await tf.browser.toPixels(prediction.reshape([256, 256, 1]).clipByValue(0, 1), cvv);
+              //document.body.appendChild(cvv);
+              //let o2 = image
+
+            }
+            res = tf.stack(res,2)
+            return res
+
+        }
+    </script>
+
+    <button class="start" type="button" name="get tensor" onclick="padMul128()">PROCESS</button><br>
+
+</body>
+
 </html>
