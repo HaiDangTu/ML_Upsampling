@@ -53,12 +53,10 @@
         }
     </style>
 </head>
-
 <body>
     <input class="choose" id="picField" type="file" name="" value="" accept=".png,.jpg,.bmp"><br>
     <canvas id="c" width="3000" height="3000"></canvas>
-    <canvas id="cInput" width="128" height="128"></canvas>
-
+   <canvas id="cInput" width="128" height="128"></canvas>
     <br>
     <script type="text/javascript">
         var canvas = document.getElementById("c");
@@ -138,12 +136,6 @@
           console.log(complete.shape)
           await tf.browser.toPixels(complete.clipByValue(0,1), cvv);
           document.body.appendChild(cvv);
-
-
-
-
-
-
         }
 
         document.getElementById('picField').onchange = async function(evt) {
@@ -177,7 +169,6 @@
               //await tf.browser.toPixels(prediction.reshape([256, 256, 1]).clipByValue(0, 1), cvv);
               //document.body.appendChild(cvv);
               //let o2 = image
-
             }
             res = tf.stack(res,2)
             return res
