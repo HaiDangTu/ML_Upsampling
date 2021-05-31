@@ -87,7 +87,6 @@
           console.log("newW-canvas.width:"+(newW-canvas.width))
           padded = tensor.pad([[0, newH-canvas.height],[0,newW-canvas.width],[0,0]])
           console.log(padded.shape)
-
           padded.print()
           var cvv = document.createElement('canvas');
           cvv.id = "r3"
@@ -105,31 +104,19 @@
           let tensor = tf.browser.fromPixels(image)
           const b = tf.scalar(255.0);
           tensor = tensor.toFloat().div(b)
-
           row = []
           for (var i = 0; i < canvas.width; i+=128){
             col = []
             for (var j = 0; j < canvas.height; j+=128){
-
               res = tensor.slice([j,i],[128,128])
-
-              /*var cvv = document.createElement('canvas');
-              cvv.width = res.shape[0]
-              cvv.height = res.shape[0]
-              await tf.browser.toPixels(res, cvv);
-              document.body.appendChild(cvv);*/
-
               res = await upsampleTo256(res)
               console.log("RES SHAPE SHOULD BE RANK 3:"+res.shape)
               col.push(res)
             }
             var fullcolumn = tf.concat(col,0)
-
             row.push(fullcolumn)
           }
-
           var complete = tf.concat(row,1)
-
           var cvv = document.createElement('canvas');
           cvv.width = res.shape[0]
           cvv.height = res.shape[0]
@@ -137,7 +124,6 @@
           await tf.browser.toPixels(complete.clipByValue(0,1), cvv);
           document.body.appendChild(cvv);
         }
-
         document.getElementById('picField').onchange = async function(evt) {
             var tgt = evt.target || window.event.srcElement,
                 files = tgt.files;
@@ -160,24 +146,12 @@
             {
               var layer = tf.unstack(tensor, 2)[i].expandDims(0).expandDims(-1).toFloat()
               var prediction = model.predict(layer).squeeze();//squeezes third axis
-
               res.push(prediction)
-              //var cvv = document.createElement('canvas');
-              //cvv.id = "r1"
-              //cvv.width = prediction.shape.width
-              //cvv.height = prediction.shape.height
-              //await tf.browser.toPixels(prediction.reshape([256, 256, 1]).clipByValue(0, 1), cvv);
-              //document.body.appendChild(cvv);
-              //let o2 = image
             }
             res = tf.stack(res,2)
             return res
-
         }
     </script>
-
     <button class="start" type="button" name="get tensor" onclick="padMul128()">PROCESS</button><br>
-
 </body>
-
 </html>
