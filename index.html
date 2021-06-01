@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.6.0/dist/tf.min.js"></script>
     <script type="text/javascript" src="functions.js">
-
     </script>
     <title></title>
     <style media="screen">
@@ -76,7 +75,6 @@
             await tf.browser.toPixels(tensor, document.getElementById("cInput"));
             console.log("Resize Complete")
         };
-
         document.getElementById('picField').onchange = async function(evt) {
             var tgt = evt.target || window.event.srcElement,
                 files = tgt.files;
@@ -88,7 +86,6 @@
                 fr.readAsDataURL(files[0]);
             }
         }
-
     </script>
     <button class="start" type="button" name="get tensor" onclick="padMul128()">PROCESS</button><br>
 </body>
